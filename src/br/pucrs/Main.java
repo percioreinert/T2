@@ -26,6 +26,7 @@ public class Main {
 
     private static void findMinimumPath(Dot last, Dot current,  int moves) {
         if (matrix[current.x][current.y].equals("S")) {
+            // setar numberOfMoves e from
             return;
         }
         if (matrix[current.x][current.y].equals("x")) {
@@ -41,29 +42,80 @@ public class Main {
             }
         }
 
-        // observar as constraints de topo/baixo e lados
-        if (current.y + 1 < matrix[0].length) {
+        // deu stackOverflow nessa bagaça, temos q meter mais constraints aqui
+        // constraints + recursão
+        if (current.y + 1 < matrix.length) {
             findMinimumPath(current, new Dot(current.x, current.y + 1), moves);
         }
         if (current.y >= 0) {
             findMinimumPath(current, new Dot(current.x, current.y - 1), moves);
         }
-        if (current.x + 1 >= matrix.length) {
+        if (current.x + 1 >= matrix[0].length) {
             findMinimumPath(current, new Dot(0, current.y), moves);
         } else {
             findMinimumPath(current, new Dot(current.x + 1, current.y), moves);
         }
         if (current.x - 1 < 0) {
-            findMinimumPath(current, new Dot(matrix.length - 1, current.y), moves);
+            findMinimumPath(current, new Dot(matrix[0].length - 1, current.y), moves);
         } else {
             findMinimumPath(current, new Dot(current.x - 1, current.y), moves);
         }
 
-        // continuar as constraints
-        findMinimumPath(current, new Dot(current.x + 1, current.y + 2), moves);
-        findMinimumPath(current, new Dot(current.x + 1, current.y - 2), moves);
-        findMinimumPath(current, new Dot(current.x - 1, current.y + 2), moves);
-        findMinimumPath(current, new Dot(current.x - 1, current.y - 2), moves);
+        if (current.x + 2 >= matrix[0].length) {
+            if (current.y + 1 < matrix.length) {
+                int aux;
+                if (current.x + 2 == matrix[0].length) {
+                    aux = 0;
+                } else {
+                    aux = 1;
+                }
+                findMinimumPath(current, new Dot(aux, current.y + 1), moves);
+            }
+        } else if (current.y + 1 < matrix.length){
+            findMinimumPath(current, new Dot(current.x + 2, current.y + 1), moves);
+        }
+
+        if (current.x + 2 >= matrix[0].length) {
+            if (current.y - 1 >= 0) {
+                int aux;
+                if (current.x + 2 == matrix[0].length) {
+                    aux = 0;
+                } else {
+                    aux = 1;
+                }
+                findMinimumPath(current, new Dot(aux, current.y + 1), moves);
+            }
+        } else if (current.y - 1 >= 0){
+            findMinimumPath(current, new Dot(current.x + 2, current.y - 1), moves);
+        }
+
+        if (current.x - 2 < 0) {
+            if (current.y + 1 < matrix.length) {
+                int aux;
+                if (current.x - 2 == -1) {
+                    aux = matrix[0].length - 1;
+                } else {
+                    aux = matrix[0].length - 2;
+                }
+                findMinimumPath(current, new Dot(aux, current.y + 1), moves);
+            }
+        } else if (current.y + 1 < matrix.length){
+            findMinimumPath(current, new Dot(current.x - 2, current.y + 1), moves);
+        }
+
+        if (current.x - 2 < 0) {
+            if (current.y - 1 >= 0) {
+                int aux;
+                if (current.x - 2 == -1) {
+                    aux = matrix[0].length - 1;
+                } else {
+                    aux = matrix[0].length - 2;
+                }
+                findMinimumPath(current, new Dot(aux, current.y - 1), moves);
+            }
+        } else if (current.y - 1 >= 0){
+            findMinimumPath(current, new Dot(current.x - 2, current.y - 1), moves);
+        }
     }
 
     private static void printMinimumPath() {
